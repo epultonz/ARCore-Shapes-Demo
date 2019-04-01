@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: ARSurface
   m_Shader: {fileID: 4800000, guid: eb81dc7fadf3abd41abc595bf498991b, type: 3}
   m_ShaderKeywords: _ALPHATEST_ON
@@ -65,7 +66,7 @@ Material:
     m_Floats:
     - _AnisoOffset: -0.2
     - _BumpScale: 1
-    - _Cutoff: 1
+    - _Cutoff: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Fresnel: 0.028
