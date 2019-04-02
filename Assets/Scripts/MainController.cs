@@ -14,7 +14,8 @@ public class MainController : MonoBehaviour
 	public GameObject cubePrefab;
 	public GameObject cylinderPrefab;
 	public GameObject spherePrefab;
-		
+	public GameObject tetraPrefab;
+
 	public GameObject UICanvas;
 	private Toggle ftg;
 	private Dropdown dpd;
@@ -46,6 +47,18 @@ public class MainController : MonoBehaviour
             return;
         }
 
+		var ray = Camera.main.ScreenPointToRay(touch.position);
+		var hitInfo = new RaycastHit();
+		if (Physics.Raycast(ray, out hitInfo) && hitInfo.transform.tag == "UIObj")
+		{
+			return;
+		}
+		else if (ftg.isOn && hitInfo.transform.tag == "ShapeObject")
+		{
+			hitInfo.rigidbody.AddForceAtPosition(ray.direction, hitInfo.point);
+			return;
+		}
+
 		// Raycast against the location the player touched to search for planes.
 		TrackableHit hit;
         TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon |
@@ -65,18 +78,7 @@ public class MainController : MonoBehaviour
 			{
 				createPrefab(hit);
 			}
-		}
-		else if (ftg.isOn)
-		{
-			var ray = Camera.main.ScreenPointToRay(touch.position);
-			var hitInfo = new RaycastHit();
-			if (Physics.Raycast(ray, out hitInfo)) {
-				if (hitInfo.transform.tag == "ShapeObject") {
-					hitInfo.rigidbody.AddForceAtPosition(ray.direction, hitInfo.point);
-				}
-			}
-		}
-		
+		}		
 	}
 
 	public void changeToggleColor()
@@ -105,13 +107,16 @@ public class MainController : MonoBehaviour
 		{
 			shapePrefab = cylinderPrefab;
 		}
-		else
+		else if (dpd.value == 2)
 		{
 			shapePrefab = spherePrefab;
 		}
+		else {
+			shapePrefab = tetraPrefab;
+		}
 
 		// Instantiate cube model at the hit pose.
-		var cubeObject = Instantiate(shapePrefab, hit.Pose.position + new Vector3(0.0f, 0.25f, 0.0f), hit.Pose.rotation);
+		var cubeObject = Instantiate(shapePrefab, hit.Pose.position + new Vector3(0.0f, 0.5f, 0.0f), hit.Pose.rotation);
 
 		// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
 		cubeObject.transform.Rotate(0, 0, 0, Space.Self);
