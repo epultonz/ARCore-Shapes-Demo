@@ -5,12 +5,12 @@ using GoogleARCore.Examples.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 /// <summary>
 /// Controls the HelloAR example.
 /// </summary>
 public class MainController : MonoBehaviour
 {
-
 	public GameObject cubePrefab;
 	public GameObject cylinderPrefab;
 	public GameObject spherePrefab;
@@ -19,7 +19,9 @@ public class MainController : MonoBehaviour
 	public GameObject UICanvas;
 	private Toggle ftg;
 	private Dropdown dpd;
-
+	//private float currTime = 0.0f;
+	//private const float waitTime = 10.0f;
+	//private bool isMoving = false;
 
 	/// <summary>
 	/// True if the app is in the process of quitting due to an ARCore connection error, otherwise false.
@@ -38,8 +40,6 @@ public class MainController : MonoBehaviour
     {
         _UpdateApplicationLifecycle();
 
-		//ftg.onValueChanged.AddListener(delegate { changeToggleColor(); });
-
 		// If the player has not touched the screen, we are done with this update.
 		Touch touch;
         if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
@@ -49,14 +49,35 @@ public class MainController : MonoBehaviour
 
 		var ray = Camera.main.ScreenPointToRay(touch.position);
 		var hitInfo = new RaycastHit();
-		if (Physics.Raycast(ray, out hitInfo) && hitInfo.transform.tag == "UIObj")
+		if (Physics.Raycast(ray, out hitInfo, 5.0f) && hitInfo.transform.tag == "UIObj")
 		{
 			return;
 		}
-		else if (ftg.isOn && hitInfo.transform.tag == "ShapeObject")
+		else if (hitInfo.transform.tag == "ShapeObject")
 		{
-			hitInfo.rigidbody.AddForceAtPosition(ray.direction, hitInfo.point);
-			return;
+			//Transform anc = null;
+			if (ftg.isOn) { // push force to the objshape
+				hitInfo.rigidbody.AddForceAtPosition(ray.direction, hitInfo.point);
+				return;
+
+			} /* else if (currTime > waitTime && !isMoving) {
+
+				anc = hitInfo.rigidbody.transform.GetComponentInParent<Anchor>().transform;
+				moveShapeObject(hitInfo);       //move the object shape
+
+			} else if (currTime > waitTime && touch.phase == TouchPhase.Ended && isMoving) {
+				hitInfo.rigidbody.transform.SetParent(anc);
+				isMoving = false;
+			}
+
+			if (touch.phase == TouchPhase.Ended)
+			{
+				currTime = 0.0f;
+			}
+			else {
+				currTime += (1.0f * Time.deltaTime);
+			}
+			*/
 		}
 
 		// Raycast against the location the player touched to search for planes.
@@ -80,6 +101,13 @@ public class MainController : MonoBehaviour
 			}
 		}		
 	}
+
+	/*
+	private void moveShapeObject(RaycastHit hit)
+	{
+		hit.transform.parent = Camera.main.transform;
+		isMoving = true;
+	}*/
 
 	public void changeToggleColor()
 	{
