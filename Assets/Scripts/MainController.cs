@@ -17,8 +17,9 @@ public class MainController : MonoBehaviour
 	public GameObject tetraPrefab;
 
 	public GameObject UICanvas;
-	private Toggle ftg;
-	private Dropdown dpd;
+	private Toggle ftg;		// the toggle for the force button
+	private Dropdown dpd;	// the list dropdown to choose the shape objects
+
 	//private float currTime = 0.0f;
 	//private const float waitTime = 10.0f;
 	//private bool isMoving = false;
@@ -28,13 +29,15 @@ public class MainController : MonoBehaviour
 	/// </summary>
 	private bool m_IsQuitting = false;
 
+	// At the start of the application, we init the Toggle and Dropdown
+	// component from the UI gameobject
 	public void Start() {
 		ftg = UICanvas.GetComponentInChildren<Toggle>();
 		dpd = UICanvas.GetComponentInChildren<Dropdown>();
 	}
 
     /// <summary>
-    /// The Unity Update() method.
+    /// The Unity Update() method. Runs every frame
     /// </summary>
     public void Update()
     {
@@ -47,15 +50,20 @@ public class MainController : MonoBehaviour
             return;
         }
 
+		// Cast a ray from the touch point of a user towards the game world space
 		var ray = Camera.main.ScreenPointToRay(touch.position);
 		var hitInfo = new RaycastHit();
+		// set the distance the ray can go to 5 meters, if the ray hits a UI object, we're done 
+		// with this update
 		if (Physics.Raycast(ray, out hitInfo, 5.0f) && hitInfo.transform.tag == "UIObj")
 		{
 			return;
 		}
-		else if (hitInfo.transform.tag == "ShapeObject")
+		else if (hitInfo.transform.tag == "ShapeObject")	// else, if the ray hits a shapeObject
 		{
 			//Transform anc = null;
+
+			// If the force toggle is active, add force to the object hit by raycast
 			if (ftg.isOn) { // push force to the objshape
 				hitInfo.rigidbody.AddForceAtPosition(ray.direction, hitInfo.point);
 				return;
@@ -82,6 +90,8 @@ public class MainController : MonoBehaviour
 
 		// Raycast against the location the player touched to search for planes.
 		TrackableHit hit;
+		// Put a filter so the raycast only picks plane with a convex shape and
+		// approximately 45 degree plane 
         TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon |
             TrackableHitFlags.FeaturePointWithSurfaceNormal;
 
@@ -97,6 +107,7 @@ public class MainController : MonoBehaviour
 			}
 			else
 			{
+				// if the raycast hits a plane, create a shapeobject there
 				createPrefab(hit);
 			}
 		}		
@@ -109,6 +120,7 @@ public class MainController : MonoBehaviour
 		isMoving = true;
 	}*/
 
+	// A method to change the "force" toggle red and green
 	public void changeToggleColor()
 	{
 		if (ftg.isOn)
@@ -123,10 +135,12 @@ public class MainController : MonoBehaviour
 		}
 	}
 
+	// Method to create the shapeObject
 	private void createPrefab(TrackableHit hit) {
 
 		GameObject shapePrefab;
-		// check which prefab to use
+		// check which prefab to use by looking at the dropdown index value
+		// at the current runtime
 		if (dpd.value == 0)
 		{
 			shapePrefab = cubePrefab;
@@ -143,10 +157,11 @@ public class MainController : MonoBehaviour
 			shapePrefab = tetraPrefab;
 		}
 
-		// Instantiate cube model at the hit pose.
+		// Instantiate cube model at the hit pose with half a meter up
 		var cubeObject = Instantiate(shapePrefab, hit.Pose.position + new Vector3(0.0f, 0.5f, 0.0f), hit.Pose.rotation);
 
 		// Compensate for the hitPose rotation facing away from the raycast (i.e. camera).
+		// Also make the render color of the objects random
 		cubeObject.transform.Rotate(0, 0, 0, Space.Self);
 		cubeObject.GetComponent<MeshRenderer>().material.color = UnityEngine.Random.ColorHSV();
 
