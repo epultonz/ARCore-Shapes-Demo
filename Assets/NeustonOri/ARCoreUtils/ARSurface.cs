@@ -24,7 +24,7 @@ public class ARSurface : MonoBehaviour
 
 		// Move the ARSurface up slightly to avoid flickering for those
 		// who render additional geometry beneath the ARSurface.
-		Vector3 oneCentimeterUp = Vector3.up * 0.01f;
+		Vector3 oneCentimeterUp = Vector3.down * 0.001f;
 		transform.Translate(oneCentimeterUp, Space.Self);
 	}
 

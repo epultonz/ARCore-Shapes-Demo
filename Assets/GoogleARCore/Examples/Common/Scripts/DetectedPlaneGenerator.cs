@@ -23,11 +23,12 @@ namespace GoogleARCore.Examples.Common
     using System.Collections.Generic;
     using GoogleARCore;
     using UnityEngine;
+	using UnityEngine.UI;
 
-    /// <summary>
-    /// Manages the visualization of detected planes in the scene.
-    /// </summary>
-    public class DetectedPlaneGenerator : MonoBehaviour
+	/// <summary>
+	/// Manages the visualization of detected planes in the scene.
+	/// </summary>
+	public class DetectedPlaneGenerator : MonoBehaviour
     {
         /// <summary>
         /// A prefab for tracking and visualizing detected planes.
@@ -40,10 +41,14 @@ namespace GoogleARCore.Examples.Common
         /// </summary>
         private List<DetectedPlane> m_NewPlanes = new List<DetectedPlane>();
 
-        /// <summary>
-        /// The Unity Update method.
-        /// </summary>
-        public void Update()
+		private List<GameObject> m_AllPlanes = new List<GameObject>();
+
+		public Toggle planeToggle;
+
+		/// <summary>
+		/// The Unity Update method.
+		/// </summary>
+		public void Update()
         {
             // Check that motion tracking is tracking.
             if (Session.Status != SessionStatus.Tracking)
@@ -58,9 +63,29 @@ namespace GoogleARCore.Examples.Common
                 // Instantiate a plane visualization prefab and set it to track the new plane. The transform is set to
                 // the origin with an identity rotation since the mesh for our prefab is updated in Unity World
                 // coordinates.
-                GameObject planeObject = Instantiate(DetectedPlanePrefab, new Vector3(0.0f,-0.20f,0.0f), Quaternion.identity, transform);
+                GameObject planeObject = Instantiate(DetectedPlanePrefab, Vector3.zero, Quaternion.identity, transform);
                 planeObject.GetComponent<DetectedPlaneVisualizer>().Initialize(m_NewPlanes[i]);
+				m_AllPlanes.Add(planeObject);
             }
         }
+
+		/*
+		public void renderPlane() {
+			if (planeToggle.isOn)
+			{
+				foreach (var plane in m_AllPlanes)
+				{
+					plane.GetComponent<DetectedPlaneVisualizer>().GetComponent<MeshRenderer>().enabled = true;
+				}
+			}
+			else {
+				foreach (var plane in m_AllPlanes)
+				{
+					plane.GetComponent<DetectedPlaneVisualizer>().GetComponent<MeshRenderer>().enabled = false;
+				}
+			}
+			
+		}
+		*/
     }
 }

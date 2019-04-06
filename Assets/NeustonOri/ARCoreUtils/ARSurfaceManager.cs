@@ -22,5 +22,6 @@ public class ARSurfaceManager : MonoBehaviour
 			var arSurface = surfaceObj.AddComponent<ARSurface>();
 			arSurface.SetTrackedPlane(plane, m_surfaceMaterial);
 		}
+
 	}
 }

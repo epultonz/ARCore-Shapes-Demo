@@ -120,21 +120,6 @@ public class MainController : MonoBehaviour
 		isMoving = true;
 	}*/
 
-	// A method to change the "force" toggle red and green
-	public void changeToggleColor()
-	{
-		if (ftg.isOn)
-		{
-			Color cl = Color.green;
-			ftg.GetComponent<Image>().color = cl;
-		}
-		else
-		{
-			Color cl = Color.red;
-			ftg.GetComponent<Image>().color = cl;
-		}
-	}
-
 	// Method to create the shapeObject
 	private void createPrefab(TrackableHit hit) {
 

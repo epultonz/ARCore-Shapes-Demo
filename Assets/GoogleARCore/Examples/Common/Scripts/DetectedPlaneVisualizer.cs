@@ -24,14 +24,14 @@ namespace GoogleARCore.Examples.Common
     using GoogleARCore;
     using UnityEngine;
 
-    /// <summary>
-    /// Visualizes a single DetectedPlane in the Unity scene.
-    /// </summary>
-    public class DetectedPlaneVisualizer : MonoBehaviour
+	/// <summary>
+	/// Visualizes a single DetectedPlane in the Unity scene.
+	/// </summary>
+	public class DetectedPlaneVisualizer : MonoBehaviour
     {
         private static int s_PlaneCount = 0;
 
-        private readonly Color[] k_PlaneColors = new Color[]
+		private readonly Color[] k_PlaneColors = new Color[]
         {
             new Color(1.0f, 1.0f, 1.0f),
             new Color(0.956f, 0.262f, 0.211f),
